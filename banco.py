@@ -12,7 +12,10 @@ def inclui(mensagem: dict):
             try:
                 print(f"\nExecutando comando. Dados: {mensagem}\n")
                 cur.execute(sql, mensagem)
-                print(f"Mensagem inserida com sucesso!\n")
+                if cur.rowcount == 0:
+                    print("Não foi possivel inserir a mensagem.")
+                else:
+                    print("Mensagem inserida com sucesso!\n")
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao inserir mensagem. Dados: {mensagem}\nErro: {erro.message}")
@@ -27,7 +30,10 @@ def altera(mensagem: dict):
             try:
                 print(f"\nExecutando comando de atualização. Dados: {mensagem}\n")
                 cur.execute(sql, mensagem)
-                print("Mensagem atualizada executado com sucesso!\n")
+                if cur.rowcount == 0:
+                    print(f"Nenhuma mensagem encontrada com ID {mensagem['id']}.")
+                else:
+                    print("Mensagem atualizada com sucesso!\n")
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao atualizar a mensagem de ID {mensagem.id}. Dados: {mensagem}\nErro: {erro.message}")
@@ -49,12 +55,11 @@ def recupera(id: int) -> dict:
                         'conteudo': resultado[4]
                     }
                 else:
-                    print(f"Nenhuma mensagem encontrada com ID: {id}")
                     return {}
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao recuperar mensagem com ID: {id}\nErro: {erro.message}")
-                return {}
+                return None
 
 def recupera_assunto(assunto: str) -> list:
     sql = "SELECT * FROM tb_mensagem WHERE assunto LIKE :assunto"
@@ -68,7 +73,7 @@ def recupera_assunto(assunto: str) -> list:
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao recuperar mensagens com assunto: {assunto}\nErro: {erro.message}")
-                return []
+                return None
 
 def recupera_destinatario(destinatario: str) -> list:
     sql = "SELECT * FROM tb_mensagem WHERE destinatario = :destinatario"
@@ -76,23 +81,25 @@ def recupera_destinatario(destinatario: str) -> list:
     with get_conexao() as conn:
         with conn.cursor() as cur:
             try:
-                cur.execute(sql, {'destinatario': f'%{destinatario}%'})
+                cur.execute(sql, {'destinatario': f'{destinatario}'})
                 resultado = cur.fetchall()
                 return [dict(zip(chaves_dicionario, mensagem)) for mensagem in resultado]
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao recuperar mensagens para destinatário: {destinatario}\nErro: {erro.message}")
-                return []
-
+                return None
 
 def apaga(id: int):
-    sql = "DELETE tb_mensagem WHERE id = :id"
+    sql = "DELETE FROM tb_mensagem WHERE id = :id"
     with get_conexao() as conn:
         with conn.cursor() as cur:
             try:
                 print(f"\nExecutando comando de deleção. ID: {id}\n")
                 cur.execute(sql, {'id': id})
-                print("Mensagem deletada com sucesso!\n")
+                if cur.rowcount == 0:
+                    print(f"Nenhuma mensagem encontrada com ID {id}.")
+                else:
+                    print("Mensagem deletada com sucesso!\n")
             except oracledb.DatabaseError as e:
                 erro, = e.args
                 print(f"\nErro ao deletar mensagem com ID: {id}\nErro: {erro.message}")
