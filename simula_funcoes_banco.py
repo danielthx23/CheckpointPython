@@ -5,7 +5,7 @@ def print_resultado(titulo, resultado):
     if isinstance(resultado, list) and len(resultado) > 0:
         for msg in resultado:
             print(f"\nID: {msg['id']}, \nAssunto: {msg['assunto']}, \nDestinatário: {msg['destinatario']}, \nRemetente: {msg['remetente']}, \nConteúdo: {msg['conteudo']}")
-    elif isinstance(resultado, dict) and len(resultado) > 0:
+    elif isinstance(resultado, dict) and resultado:
         print(f"\nID: {resultado['id']}, \nAssunto: {resultado['assunto']}, \nDestinatário: {resultado['destinatario']}, \nRemetente: {resultado['remetente']}, \nConteúdo: {resultado['conteudo']}")
     else:
         print("\nNenhuma mensagem encontrada")
