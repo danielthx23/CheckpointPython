@@ -71,7 +71,7 @@ def recupera_assunto(assunto: str) -> list:
                 return []
 
 def recupera_destinatario(destinatario: str) -> list:
-    sql = "SELECT * FROM tb_mensagem WHERE destinatario LIKE :destinatario"
+    sql = "SELECT * FROM tb_mensagem WHERE destinatario = :destinatario"
     chaves_dicionario = ['id', 'assunto', 'destinatario', 'remetente', 'conteudo'] 
     with get_conexao() as conn:
         with conn.cursor() as cur:
