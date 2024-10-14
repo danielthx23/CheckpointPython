@@ -6,7 +6,6 @@
 |------------------------|--------| 
 | Daniel Saburo Akiyama | 558263 | 
 | João Pedro R. | 558199 | 
-| Danilo Correia | 557540 |
 
 ## Guia de como rodar o Checkpoint
 
